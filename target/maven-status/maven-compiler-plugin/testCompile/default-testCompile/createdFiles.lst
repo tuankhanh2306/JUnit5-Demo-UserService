@@ -1,0 +1,5 @@
+com\example\userservice\unit\service\AdvancedJUnit5FeaturesTest.class
+com\example\userservice\UserServiceApplicationTests.class
+com\example\userservice\unit\service\UserServiceTest.class
+com\example\userservice\unit\service\AdvancedJUnit5FeaturesTest$CartFeatures.class
+com\example\userservice\unit\service\AdvancedJUnit5FeaturesTest$ParallelTests.class
