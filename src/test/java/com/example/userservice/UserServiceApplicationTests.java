@@ -13,7 +13,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+
 @SpringBootTest
+@Execution(ExecutionMode.SAME_THREAD)
 class UserServiceApplicationTests {
 
     @Autowired

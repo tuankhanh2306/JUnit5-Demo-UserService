@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Demo TestNG Suite" verbose="1">
+    <test name="Unit Tests for UserService">
+        <classes>
+            <class name="com.example.userservice.unit.service.UserServiceTestNGTest" />
+            <class name="com.example.userservice.unit.service.AdvancedTestNGFeaturesTest" />
+        </classes>
+    </test>
+</suite>

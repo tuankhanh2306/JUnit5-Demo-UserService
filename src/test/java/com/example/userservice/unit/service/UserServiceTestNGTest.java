@@ -33,6 +33,7 @@ public class UserServiceTestNGTest {
     @BeforeMethod
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this); // Khởi tạo Mockito cho TestNG
+        userService = new UserService(userRepository); // Thủ công khởi tạo để đảm bảo Mock mới được inject
         mockUser = new User(1L, "Khanh", "khanhcute@gmail.com", "k-123");
     }
 
@@ -91,5 +92,16 @@ public class UserServiceTestNGTest {
         // Path B: Không tìm thấy (Sử dụng cách thức bắt Exception của TestNG)
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
         Assert.assertThrows(IllegalArgumentException.class, () -> userService.getUserById(99L));
+    }
+
+    // 5. ERROR HANDLING PATHS — Khi lỗi, save() KHÔNG được gọi
+    @Test
+    public void errorHandling_createUser_duplicateEmail_shouldNotSave() {
+        UserDto dto = new UserDto("Khanh", "khanhcute@gmail.com", "k-123");
+        when(userRepository.findByEmail("khanhcute@gmail.com"))
+                .thenReturn(Optional.of(mockUser)); // email đã tồn tại
+
+        Assert.assertThrows(IllegalStateException.class, () -> userService.createUser(dto));
+        verify(userRepository, never()).save(any()); // save KHÔNG được gọi
     }
 }

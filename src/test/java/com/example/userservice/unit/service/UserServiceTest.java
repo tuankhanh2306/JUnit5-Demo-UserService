@@ -39,14 +39,13 @@ class UserServiceTest {
     @Test
     @DisplayName("1. Interface — getAllUsers() phải gọi findAll() đúng 1 lần")
     void interface_getAllUsers_shouldCallFindAll() {
-        //given phase
+        // given phase
         when(userRepository.findAll()).thenReturn(List.of(mockUser));
 
         userService.getAllUsers();
-        //and phase
+        // and phase
         verify(userRepository, times(1)).findAll();
     }
-
 
     @Test
     @DisplayName("2. Local Data Structures — getAllUsers() trả về đúng dữ liệu")
@@ -59,9 +58,6 @@ class UserServiceTest {
         assertEquals("Khanh", result.get(0).getName());
         assertEquals("khanhcute@gmail.com", result.get(0).getEmail());
         assertEquals("k-123", result.get(0).getKeycloakId());
-
-
-
     }
 
     @ParameterizedTest
@@ -73,7 +69,6 @@ class UserServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> userService.createUser(dto));
     }
-
 
     @Test
     @DisplayName("4. Independent Paths — getUserById() tìm thấy vs không tìm thấy")
