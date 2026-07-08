@@ -45,46 +45,44 @@ public class AdvancedTestNGFeaturesTest {
     }
 
     // 3. Parallel Execution & Multi-threading trực tiếp tại annotation
-    // Giả lập hệ thống đặt vé tàu/vé phim: 3 khách hàng cùng nhấn đặt ghế A1 tại
-    // một thời điểm
-    private final java.util.concurrent.atomic.AtomicBoolean seatA1Booked = new java.util.concurrent.atomic.AtomicBoolean(
+    // Giả lập hệ thống đặt lịch khám bệnh trực tuyến: 3 bệnh nhân cùng nhấn nút "Xác nhận" 
+    // đặt lịch với Bác sĩ A vào lúc 9h sáng tại cùng một thời điểm (mili-giây)
+    private final java.util.concurrent.atomic.AtomicBoolean doctorABookedAt9AM = new java.util.concurrent.atomic.AtomicBoolean(
             false);
     private final java.util.concurrent.atomic.AtomicInteger bookingSuccessCount = new java.util.concurrent.atomic.AtomicInteger(
             0);
     private final java.util.concurrent.atomic.AtomicInteger bookingFailCount = new java.util.concurrent.atomic.AtomicInteger(
             0);
 
-    // Chạy test case này 3 lần (invocationCount) trên 3 luồng đồng thời
-    // (threadPoolSize)
+    // Chạy test case này 3 lần (invocationCount) trên 3 luồng đồng thời (threadPoolSize)
+    // để kiểm tra lỗi tranh chấp dữ liệu (Race Condition) / Double-booking
     @Test(invocationCount = 3, threadPoolSize = 3)
-    public void testTicketBookingConcurrency() throws InterruptedException {
+    public void testDoctorBookingConcurrency() throws InterruptedException {
         String threadName = Thread.currentThread().getName();
-        System.out.println("Khách hàng trên Thread [" + threadName + "] bắt đầu nhấn nút ĐẶT GHẾ A1...");
+        System.out.println("Bệnh nhân trên Thread [" + threadName + "] bắt đầu nhấn nút XÁC NHẬN đặt lịch Bác sĩ A lúc 9h...");
 
         // Giả lập độ trễ mạng cực nhỏ để cả 3 luồng cùng hội tụ tại thời điểm đặt
         TimeUnit.MILLISECONDS.sleep(100);
 
-        // Sử dụng compareAndSet (Atomic) để đảm bảo chỉ có 1 luồng duy nhất đổi trạng
-        // thái ghế từ false -> true thành công
-        if (seatA1Booked.compareAndSet(false, true)) {
+        // Sử dụng compareAndSet (Atomic) để đảm bảo chỉ có 1 bệnh nhân duy nhất đặt lịch thành công
+        if (doctorABookedAt9AM.compareAndSet(false, true)) {
             bookingSuccessCount.incrementAndGet();
-            System.out.println(" -> KẾT QUẢ: Thread [" + threadName + "] đặt ghế A1 THÀNH CÔNG!");
+            System.out.println(" >>> [SUCCESS] Thread [" + threadName + "] đặt lịch Bác sĩ A lúc 9h THÀNH CÔNG! <<<");
         } else {
             bookingFailCount.incrementAndGet();
-            System.out.println(" -> KẾT QUẢ: Thread [" + threadName + "] đặt ghế A1 THẤT BẠI (Ghế đã được đặt trước)!");
+            System.out.println("  ↳ [❌ FAIL] Thread [" + threadName + "] đặt lịch thất bại (Lịch đã bị trùng/Double-booked)!");
         }
     }
 
-    // Kiểm tra xem kết quả đặt vé cuối cùng có đúng luật: chỉ 1 thành công và 2
-    // thất bại hay không
-    @Test(dependsOnMethods = { "testTicketBookingConcurrency" })
-    public void verifyBookingResult() {
-        System.out.println("=== KIỂM TRA KẾT QUẢ ĐẶT VÉ CUỐI CÙNG ===");
-        System.out.println("Tổng số khách đặt thành công: " + bookingSuccessCount.get());
-        System.out.println("Tổng số khách đặt thất bại: " + bookingFailCount.get());
+    // Kiểm tra xem kết quả đặt lịch cuối cùng có đúng luật: chỉ 1 thành công và 2 thất bại hay không
+    @Test(dependsOnMethods = { "testDoctorBookingConcurrency" })
+    public void verifyDoctorBookingResult() {
+        System.out.println("=== KIỂM TRA KẾT QUẢ ĐẶT LỊCH KHÁM BÁC SĨ CUỐI CÙNG ===");
+        System.out.println("Tổng số bệnh nhân đặt thành công: " + bookingSuccessCount.get());
+        System.out.println("Tổng số bệnh nhân đặt thất bại: " + bookingFailCount.get());
 
-        Assert.assertEquals(bookingSuccessCount.get(), 1, "Chỉ được phép có duy nhất 1 khách đặt thành công!");
-        Assert.assertEquals(bookingFailCount.get(), 2, "Phải có đúng 2 khách đặt thất bại!");
+        Assert.assertEquals(bookingSuccessCount.get(), 1, "Chỉ được phép có duy nhất 1 bệnh nhân đặt thành công!");
+        Assert.assertEquals(bookingFailCount.get(), 2, "Phải có đúng 2 bệnh nhân đặt thất bại do trùng lịch!");
     }
 
     // 4. DataProvider nâng cao của TestNG

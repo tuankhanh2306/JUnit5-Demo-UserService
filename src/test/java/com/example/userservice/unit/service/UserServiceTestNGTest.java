@@ -35,7 +35,6 @@ public class UserServiceTestNGTest {
     @BeforeMethod
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this); // Khởi tạo Mockito cho TestNG
-        userService = new UserService(userRepository); // Thủ công khởi tạo để đảm bảo Mock mới được inject
         mockUser = new User(1L, "Khanh", "khanhcute@gmail.com", "k-123");
     }
 
