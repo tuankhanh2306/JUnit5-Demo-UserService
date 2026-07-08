@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,28 +40,28 @@ class UserServiceTest {
     @Test
     @DisplayName("1. Interface — getAllUsers() phải gọi findAll() đúng 1 lần")
     void interface_getAllUsers_shouldCallFindAll() {
-        //given phase
+        // given phase
         when(userRepository.findAll()).thenReturn(List.of(mockUser));
-
+        // when
         userService.getAllUsers();
-        //and phase
+        // and phase
         verify(userRepository, times(1)).findAll();
-    }
 
+    }
 
     @Test
     @DisplayName("2. Local Data Structures — getAllUsers() trả về đúng dữ liệu")
     void localData_getAllUsers_shouldReturnCorrectData() {
+        // given
         when(userRepository.findAll()).thenReturn(List.of(mockUser));
 
+        // when phase
         List<User> result = userService.getAllUsers();
-
+        // and phases
         assertEquals(1, result.size());
         assertEquals("Khanh", result.get(0).getName());
         assertEquals("khanhcute@gmail.com", result.get(0).getEmail());
         assertEquals("k-123", result.get(0).getKeycloakId());
-
-
 
     }
 
@@ -73,7 +74,6 @@ class UserServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> userService.createUser(dto));
     }
-
 
     @Test
     @DisplayName("4. Independent Paths — getUserById() tìm thấy vs không tìm thấy")
@@ -104,4 +104,29 @@ class UserServiceTest {
 
         verify(userRepository, never()).save(any()); // save KHÔNG được gọi
     }
+
+    @Test
+    void test1_updateUserName() {
+        mockUser.setName("Tuan");
+        assertEquals("Tuan", mockUser.getName()); // -> PASS
+    }
+
+    @Test
+    void test2_checkDefaultName() {
+        assertEquals("Khanh", mockUser.getName()); // -> VẪN PASS!
+    }
+
+    @Test
+    void test1_updateUserName2() {
+        // Thay đổi tên của mockUser dùng chung thành "Tuan"
+        mockUser.setName("Tuan");
+        assertEquals("Tuan", mockUser.getName()); // -> PASS
+    }
+
+    @Test
+    void test2_checkDefaultName2() {
+        // Ca test này mong muốn kiểm tra tên mặc định ban đầu phải là "Khanh"
+        assertEquals("Khanh", mockUser.getName()); // -> BỊ FAIL!
+    }
+
 }
