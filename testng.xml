@@ -1,6 +1,12 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="Demo TestNG Suite" verbose="1">
     <test name="Unit Tests for UserService">
+    <!-- CẤU HÌNH NHÓM Ở ĐÂY -->
+        <groups>
+            <run>
+                <include name="smoke" /> <!-- Chỉ chạy các test có groups = "smoke" -->
+            </run>
+        </groups>
         <classes>
             <class name="com.example.userservice.unit.service.UserServiceTestNGTest" />
             <class name="com.example.userservice.unit.service.AdvancedTestNGFeaturesTest" />

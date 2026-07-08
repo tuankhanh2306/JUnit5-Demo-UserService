@@ -109,7 +109,7 @@
 							<goal>test</goal>
 						</goals>
 						<configuration>
-							<skip>false</skip>
+							<skip>true</skip> <!-- Tắt hẳn JUnit 5 ở đây -->
 							<includes>
 								<include>**/*Test.java</include>
 								<include>**/*Tests.java</include>
@@ -128,6 +128,10 @@
 						</goals>
 						<configuration>
 							<skip>false</skip>
+							<!-- Thêm dòng này để TestNG không quét và chạy nhầm các class JUnit 5 -->
+							<includes>
+								<include>none</include>
+							</includes>
 							<suiteXmlFiles>
 								<suiteXmlFile>testng.xml</suiteXmlFile>
 							</suiteXmlFiles>

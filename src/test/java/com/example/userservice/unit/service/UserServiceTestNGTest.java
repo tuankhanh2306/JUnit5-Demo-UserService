@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class UserServiceTestNGTest {
@@ -29,7 +30,8 @@ public class UserServiceTestNGTest {
     private User mockUser;
     private AutoCloseable closeable;
 
-    // 1. Lifecycle Hook in TestNG: @BeforeMethod (Tương đương @BeforeEach của JUnit 5)
+    // 1. Lifecycle Hook in TestNG: @BeforeMethod (Tương đương @BeforeEach của JUnit
+    // 5)
     @BeforeMethod
     public void setUp() {
         closeable = MockitoAnnotations.openMocks(this); // Khởi tạo Mockito cho TestNG
@@ -50,7 +52,9 @@ public class UserServiceTestNGTest {
         verify(userRepository, times(1)).findAll();
     }
 
-    // So sánh thứ tự Assert: TestNG nhận (actual, expected) ngược lại so với JUnit 5 (expected, actual)
+    // So sánh thứ tự Assert:
+    // TestNG nhận (actual, expected)
+    // JUnit 5 (expected, actual)
     @Test
     public void localData_getAllUsers_shouldReturnCorrectData() {
         when(userRepository.findAll()).thenReturn(List.of(mockUser));
@@ -61,15 +65,16 @@ public class UserServiceTestNGTest {
         Assert.assertEquals(result.get(0).getEmail(), "khanhcute@gmail.com");
     }
 
-    // 3. Parameterized Test trong TestNG sử dụng @DataProvider (Điểm khác biệt lớn so với JUnit 5)
+    // 3. Parameterized Test trong TestNG sử dụng @DataProvider (Điểm khác biệt lớn
+    // so với JUnit 5)
     @DataProvider(name = "invalidEmails")
     public Object[][] invalidEmailProvider() {
         return new Object[][] {
-            {"invalidemail"},
-            {"test@"},
-            {"@gmail.com"},
-            {""},
-            {"   "}
+                { "invalidemail" },
+                { "test@" },
+                { "@gmail.com" },
+                { "" },
+                { "   " }
         };
     }
 
@@ -86,11 +91,16 @@ public class UserServiceTestNGTest {
     public void independentPaths_getUserById_foundAndNotFound() {
         // Path A: Tìm thấy
         when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+
+        // act: hang dong
         User found = userService.getUserById(1L);
+        // assert: kiem tra ket qua
         Assert.assertEquals(found.getName(), "Khanh");
 
         // Path B: Không tìm thấy (Sử dụng cách thức bắt Exception của TestNG)
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // assert: kiem tra ket qua
         Assert.assertThrows(IllegalArgumentException.class, () -> userService.getUserById(99L));
     }
 

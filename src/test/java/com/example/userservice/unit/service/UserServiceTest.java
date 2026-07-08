@@ -50,10 +50,11 @@ class UserServiceTest {
     @Test
     @DisplayName("2. Local Data Structures — getAllUsers() trả về đúng dữ liệu")
     void localData_getAllUsers_shouldReturnCorrectData() {
+        // given phase
         when(userRepository.findAll()).thenReturn(List.of(mockUser));
-
+        // and phase
         List<User> result = userService.getAllUsers();
-
+        // then phase
         assertEquals(1, result.size());
         assertEquals("Khanh", result.get(0).getName());
         assertEquals("khanhcute@gmail.com", result.get(0).getEmail());
