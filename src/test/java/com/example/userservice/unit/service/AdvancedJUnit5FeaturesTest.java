@@ -25,7 +25,7 @@ class AdvancedJUnit5FeaturesTest {
     // 2. Parameterized Test (Kiểm thử tham số hóa)
     @ParameterizedTest
     @ValueSource(strings = {"JUnit5", "TestNG", "Mockito"})
-    @DisplayName("Parameterized Test - Chạy 1 hàm test với nhiều chuỗi khác nhau")
+    @DisplayName("Parameterized Test ")
     void testWithStringInputs(String input) {
         System.out.println("Testing input: " + input);
         assertTrue(input.length() > 0);

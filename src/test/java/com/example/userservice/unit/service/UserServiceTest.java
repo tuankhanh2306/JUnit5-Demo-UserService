@@ -30,19 +30,19 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService; // MODULE
 
-    private User mockUser;
+     private User mockUser;
 
-    @BeforeEach
-    void setUp() {
-        mockUser = new User(1L, "Khanh", "khanhcute@gmail.com", "k-123");
-    }
+     @BeforeEach
+     void setUp() {
+     mockUser = new User(1L, "Khanh", "khanhcute@gmail.com", "k-123");
+     }
 
     @Test
     @DisplayName("1. Interface — getAllUsers() phải gọi findAll() đúng 1 lần")
     void interface_getAllUsers_shouldCallFindAll() {
         // given phase
         when(userRepository.findAll()).thenReturn(List.of(mockUser));
-        // when
+        // when phase
         userService.getAllUsers();
         // and phase
         verify(userRepository, times(1)).findAll();
@@ -105,28 +105,6 @@ class UserServiceTest {
         verify(userRepository, never()).save(any()); // save KHÔNG được gọi
     }
 
-    @Test
-    void test1_updateUserName() {
-        mockUser.setName("Tuan");
-        assertEquals("Tuan", mockUser.getName()); // -> PASS
-    }
 
-    @Test
-    void test2_checkDefaultName() {
-        assertEquals("Khanh", mockUser.getName()); // -> VẪN PASS!
-    }
-
-    @Test
-    void test1_updateUserName2() {
-        // Thay đổi tên của mockUser dùng chung thành "Tuan"
-        mockUser.setName("Tuan");
-        assertEquals("Tuan", mockUser.getName()); // -> PASS
-    }
-
-    @Test
-    void test2_checkDefaultName2() {
-        // Ca test này mong muốn kiểm tra tên mặc định ban đầu phải là "Khanh"
-        assertEquals("Khanh", mockUser.getName()); // -> BỊ FAIL!
-    }
 
 }
